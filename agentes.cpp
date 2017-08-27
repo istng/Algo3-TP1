@@ -42,7 +42,10 @@ bool habiaQueAgregarlo(std::vector< std::vector<int> > agentes, std::vector<int>
 //necesitamos tres estados para agentes: confiable, no confiable, y no sabe no contesta, 1, -1 y 0 (enumerate...)
 void confiablesConPodasAux(std::vector< std::vector<int> > agentes, std::vector<int>& restantes, std::vector<int>& elegidos){
 
+
+    //####################################################################
     //restantes tiene que empezar en 0 y no en 1 IMPORTANTE PARA EL PARSEO
+    //####################################################################
 
     if(restantes.size() == 0){
         //llegué al final
