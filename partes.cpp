@@ -1,39 +1,22 @@
-#include <iostream>
-#include <vector>
-//#include "auxiliares.h"
+#include "auxiliares.h"
 
 
-/*void confiables(){
+void partes(std::vector<int>& conjunto, std::vector<int>& parte){
 
-}*/
-
-void imprimirVector(std::vector<int> v){
-    if(v.size() != 0){
-        std::cout << "{ ";
-        for (int i = 0; i < v.size()-1; ++i){
-            std::cout << v[i] << ", ";
-        }
-        std::cout << v[v.size()-1] << " }" << std::endl;
-    }
-}
-
-//necesitamos tres estados: confiable, no confiable, y no sabe no contesta, 1, -1 y 0 (enumerate...)
-void confiablesAux(/*std::vector< std::vector<int> > votos,*/ std::vector<int>& agentes, std::vector<int>& elegidos){
-
-    if(agentes.size() == 0){
-        imprimirVector(elegidos);
+    if(conjunto.size() == 0){
+        imprimirVector(parte);
     } else {
 
-            int actual = agentes[0];
-            agentes.erase(agentes.begin());
+            int actual = conjunto[0];
+            conjunto.erase(conjunto.begin());
 
-            elegidos.push_back(actual);
-            confiablesAux(agentes, elegidos);
+            parte.push_back(actual);
+            partes(conjunto, parte);
 
-            if(elegidos.size() != 0){elegidos.pop_back();}
-            confiablesAux(agentes, elegidos);
+            if(parte.size() != 0){parte.pop_back();}
+            partes(conjunto, parte);
 
-            agentes.insert(agentes.begin(), actual);
+            conjunto.insert(conjunto.begin(), actual);
 
     }
 
@@ -42,12 +25,12 @@ void confiablesAux(/*std::vector< std::vector<int> > votos,*/ std::vector<int>& 
 
 int main(){
 
-    std::vector<int> agentes;
+    std::vector<int> conjunto;
     for (int i = 0; i < 5; ++i){
-        agentes.push_back(i+1);
+        conjunto.push_back(i+1);
     }
 
-    std::vector<int> elegidos;
+    std::vector<int> parte;
 
-    confiablesAux(agentes, elegidos);
+    partes(conjunto, parte);
 }
