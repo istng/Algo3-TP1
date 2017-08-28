@@ -154,7 +154,7 @@ int main(int argc, char** argv){
     else{
 
         std::vector<std::vector<std::vector<int> > > setDatos = parseador(inputPath);
-        std::cout << "me viole" << std::endl;
+
         for (int i = 0; i < setDatos.size(); ++i)
         {
             for (int j = 0; j < setDatos[i].size(); ++j)

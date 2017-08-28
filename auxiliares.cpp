@@ -105,12 +105,11 @@ void agregarAlSet(std::ifstream& input, std::vector<std::vector<std::vector<int>
     std::string lineaActual;
     getline(input, lineaActual);
 
-    if (lineaActual[0] == 0 && lineaActual[2] == 0){
+    if (std::stoi(&lineaActual[0]) == 0 && std::atoi(&lineaActual[2]) == 0){
         //no hacemos nada, llegamos al final
-        return;
     } else {
-        int cantidadAgentes = lineaActual[0] - '0';
-        int cantidadVotos = lineaActual[2] - '0';
+        int cantidadAgentes = std::atoi(&lineaActual[0]);
+        int cantidadVotos = std::atoi(&lineaActual[2]);
 
         std::vector<std::vector<int > > agentes(cantidadAgentes);
         for (int i = 0; i < cantidadAgentes; ++i){
@@ -121,18 +120,11 @@ void agregarAlSet(std::ifstream& input, std::vector<std::vector<std::vector<int>
 
         for (int i = 0; i < cantidadVotos; ++i){
             getline(input, lineaActual);
-            int votante = lineaActual[0] - '0';
-            int voto = lineaActual[2] - '0';
+            int votante = std::atoi(&lineaActual[0]);
+            int voto = std::atoi(&lineaActual[2]);
 
             agentes[votante-1][modulo(voto)-1] = signo(voto);
         }
-
-
-        for (int i = 0; i < agentes.size(); ++i)
-        {
-            imprimirVector(agentes[i]);
-        }
-
 
         setDatos.push_back(agentes);
 
