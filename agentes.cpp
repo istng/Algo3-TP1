@@ -51,8 +51,11 @@ bool habiaQueAgregarlo(std::vector< std::vector<int> > agentes, std::vector<int>
 bool estanTodosLosQueDeberian(std::vector<std::vector<int > >& agentes, std::vector<int>& elegidos){
     bool res = true;
     for (int i = 0; i < elegidos.size(); ++i){
+std::cout << "deberian i " << i << std::endl;
         for (int j = 0; j < agentes.size(); ++j){
+std::cout << "deberian j " << j << std::endl;
             if (agentes[elegidos[i]][j] == 1 && !esta(elegidos, j)){
+std::cout << "deberian ESTAAAAAAAAA" << std::endl;
                 res = false;
                 break;
             }
@@ -76,8 +79,11 @@ std::cout << "aca me rompo 1" << std::endl;
             restantes.erase(restantes.begin());                         //lo quito, para no repetirlo en próximos llamados
 std::cout << "aca me rompo 2" << std::endl;
             elegidos.push_back(actual);                                 //con el agente actual
+std::cout << "aca me rompo 2 bis" << std::endl;
             if(puedoAgregarlo(agentes, elegidos, actual)){              //me fijo si puedo agregar o no al agente al conjunto actual
+std::cout << "aca me rompo 2 bios " << restantes.size() << std::endl;
                 confiablesSinPodasAux(agentes, restantes, elegidos);
+std::cout << "aca me rompo 2 be" << std::endl;
             }
 std::cout << "aca me rompo 3" << std::endl;
             if(elegidos.size() != 0){elegidos.pop_back();}              //sin el agente actual
