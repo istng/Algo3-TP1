@@ -10,10 +10,15 @@ void imprimirVector(std::vector<int> v){
     }
 }
 
-bool esta(int a, std::vector<int> v){
-	res = false;
-	for (int i = 0; i < v.size(); ++i){
-		if (v[i] == a){res = true;}
-	}
+
+int modulo(int a){
+	int res = a;
+	if (a < 0){res = -1*a;} 
+	return res;
+}
+
+int signo(int a){
+	int res = 1;
+	if(a < 0){res = -1;}
 	return res;
 }

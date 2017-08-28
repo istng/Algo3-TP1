@@ -3,4 +3,6 @@
 #include "auxiliares.cpp"
 
 void imprimirVector(std::vector<int> v);
-bool esta(int a, std::vector<int> v);
+
+int modulo(int a);
+int signo(int a);
