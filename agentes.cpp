@@ -1,7 +1,13 @@
 #include "auxiliares.h"
 
 
-
+bool puedoAgregarlo(std::vector< std::vector<int> > agentes, std::vector<int>& restantes, std::vector<int>& elegidos, int actual){
+    bool res = true;
+    for (int i = 0; i < elegidos.size(); ++i){
+        if (agentes[elegidos[i]][actual] + agentes[actual][elegidos[i]] == 0){res = false;}
+    }
+    return res;
+}
 
 bool puedoAgregarloConPoda(std::vector< std::vector<int> > agentes, std::vector<int>& restantes, std::vector<int>& elegidos, int actual){
     bool res = true;
@@ -38,8 +44,35 @@ bool habiaQueAgregarlo(std::vector< std::vector<int> > agentes, std::vector<int>
 }
 
 
+void confiablesSinPodasAux(std::vector< std::vector<int> > agentes, std::vector<int>& restantes, std::vector<int>& elegidos){
 
-//necesitamos tres estados para agentes: confiable, no confiable, y no sabe no contesta, 1, -1 y 0 (enumerate...)
+    if(restantes.size() == 0){
+        //llegué al final
+
+        //por ahora, muestro el conjunto resultante
+        imprimirVector(elegidos);
+    
+    } else {
+
+            int actual = restantes[0];                                  //tomo el primero de los restantes restantes
+            restantes.erase(restantes.begin());                         //lo quito, para no repetirlo en próximos llamados
+
+
+            if(puedoAgregarlo(agentes, restantes, elegidos, actual)){   //me fijo si puedo agregar o no al agente al conjunto actual
+                    elegidos.push_back(actual);                         //con el agente actual
+                    confiablesSinPodasAux(agentes, restantes, elegidos);
+            }
+    
+            if(habiaQueAgregarlo(agentes, elegidos, actual)){           //si algun elegido lo necesitaba, cortamos aca porque la instancia sería invalida
+                if(elegidos.size() != 0){elegidos.pop_back();}          //sin el agente actual
+                confiablesSinPodasAux(agentes, restantes, elegidos);
+            }
+
+            restantes.insert(restantes.begin(), actual);
+    }
+}
+
+
 void confiablesConPodasAux(std::vector< std::vector<int> > agentes, std::vector<int>& restantes, std::vector<int>& elegidos){
 
     if(restantes.size() == 0){
@@ -125,6 +158,7 @@ int main(int argc, char** argv){
 
     std::vector<int> elegidos;
 
-    confiablesConPodasAux(agentes, restantes, elegidos);
+    //confiablesConPodasAux(agentes, restantes, elegidos);
+    confiablesSinPodasAux(agentes, restantes, elegidos);
 
 }
