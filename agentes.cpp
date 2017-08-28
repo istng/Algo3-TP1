@@ -66,7 +66,7 @@ void confiablesSinPodasAux(std::vector< std::vector<int> > agentes, std::vector<
 
     if(restantes.size() == 0 && estanTodosLosQueDeberian(agentes, elegidos)){
         //llegué al final
-
+std::cout << "aca me rompo 1" << std::endl;
         //por ahora, muestro el conjunto resultante
         imprimirVector(elegidos);
 
@@ -74,18 +74,18 @@ void confiablesSinPodasAux(std::vector< std::vector<int> > agentes, std::vector<
 
             int actual = restantes[0];                                  //tomo el primero de los restantes restantes
             restantes.erase(restantes.begin());                         //lo quito, para no repetirlo en próximos llamados
-
+std::cout << "aca me rompo 2" << std::endl;
             elegidos.push_back(actual);                                 //con el agente actual
             if(puedoAgregarlo(agentes, elegidos, actual)){              //me fijo si puedo agregar o no al agente al conjunto actual
                 confiablesSinPodasAux(agentes, restantes, elegidos);
             }
-
+std::cout << "aca me rompo 3" << std::endl;
             if(elegidos.size() != 0){elegidos.pop_back();}              //sin el agente actual
             if(!habiaQueAgregarlo(agentes, elegidos, actual)){          //si no hacia falta agregar al actual, seguimos
                 confiablesSinPodasAux(agentes, restantes, elegidos);
             }
 
-
+std::cout << "aca me rompo 4" << std::endl;
             restantes.insert(restantes.begin(), actual);
     }
 }
@@ -132,11 +132,13 @@ int main(int argc, char** argv){
         return -1;
     }
 
-    bool poda = true;
-    if(argc == 2 && argv[1] == "0"){poda = false;}
+    //######################################################
+    //GUARDA ACA QUE SI NO PASAN ACTIVAR PODAS SE ROMPE TODO
+    //######################################################
+    
+    int poda = std::atoi(argv[1]);
     std::string inputPath;
     if (argc == 3){inputPath = argv[2];}
-
 
     //elección entre entrada manual o con un .in
     if (argc < 3){
@@ -153,14 +155,32 @@ int main(int argc, char** argv){
 
     else{
 
+        //parseo los datos pasados
         std::vector<std::vector<std::vector<int> > > setDatos = parseador(inputPath);
 
-        for (int i = 0; i < setDatos.size(); ++i)
-        {
-            for (int j = 0; j < setDatos[i].size(); ++j)
-            {
+        //veo que los datos estén bien
+/*        for (int i = 0; i < setDatos.size(); ++i){
+            for (int j = 0; j < setDatos[i].size(); ++j){
                 imprimirVector(setDatos[i][j]);
             }
+        }
+*/
+        for (int i = 0; i < setDatos.size(); ++i){
+            //creamos restantes y elegidos
+std::cout << "aca1 " << i << std::endl;
+            std::vector<int> restantes;
+            for (int j = 0; j < setDatos[i].size(); ++j){restantes.push_back(j);}
+            std::vector<int> elegidos;
+
+std::cout << "aca2 " << i << std::endl;
+for (int j = 0; j < setDatos[i].size(); ++j)
+{
+    imprimirVector(setDatos[i][j]);
+}
+
+            if(poda){confiablesConPodasAux(setDatos[i], restantes, elegidos);}
+            else{confiablesSinPodasAux(setDatos[i], restantes, elegidos);}
+std::cout << "aca3 " << i << std::endl;
         }
 
     }
