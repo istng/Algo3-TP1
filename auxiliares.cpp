@@ -7,7 +7,21 @@ void imprimirVector(std::vector<int> v){
             std::cout << v[i] << ", ";
         }
         std::cout << v[v.size()-1] << " }" << std::endl;
+    } else {
+    	std::cout << "{ }" << std::endl;
     }
+}
+
+
+bool esta(std::vector<int> v, int a){
+	bool res = false;
+	for (int i = 0; i < v.size(); ++i){
+		if (v[i] == a){
+			res = true;
+			break;
+		}
+	}
+	return res;
 }
 
 
