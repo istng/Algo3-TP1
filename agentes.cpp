@@ -1,5 +1,5 @@
-#include "auxiliares.h"
-
+//#include "auxiliares.h"
+#include "auxiliares.cpp"
 
 bool puedoAgregarlo(std::vector< std::vector<int> > agentes, std::vector<int>& elegidos, int actual){
     bool res = true;
@@ -123,52 +123,48 @@ void confiablesConPodasAux(std::vector< std::vector<int> > agentes, std::vector<
 
 int main(int argc, char** argv){
 
-    if (!(argc == 2 || argc == 1)){
+    if (!(argc == 3 || argc == 2 || argc == 1)){
         std::cout << std::endl << "Error en los parametros de entrada. Los parametros correctos son:" << std::endl;
-        std::cout << std::endl << "./main <activar podas>" << std::endl;
+        std::cout << std::endl << "./agentes <activar podas> <datos.in>" << std::endl;
         std::cout << std::endl << "Activar podas: 1 para activarlas, 0 para desactivarlas." << std::endl;
         std::cout << "Si no se aclara, por defecto será 1." << std::endl;
+        std::cout << "Si no se especifican datos de entrada, se utiliza entrada manual." << std::endl;
         return -1;
     }
 
-    //cambiar en cuanto este bien lo de python
     bool poda = true;
     if(argc == 2 && argv[1] == "0"){poda = false;}
+    std::string inputPath;
+    if (argc == 3){inputPath = argv[2];}
 
 
-    std::cout << std::endl << "Ingrese la cantidad de agentes:" << std::endl;
-    int cantidadAgentes = 0;
-    std::cin >> cantidadAgentes;
-    //creamos el vector de vectores de agentes, todo en cero
-    std::vector<std::vector<int > > agentes(cantidadAgentes);
-    for (int i = 0; i < cantidadAgentes; ++i){
-        for (int j = 0; j < cantidadAgentes; ++j){
-            agentes[i].push_back(0);
+    //elección entre entrada manual o con un .in
+    if (argc < 3){
+        std::vector<std::vector<int > > agentes = entradaManual();
+        //creamos restantes y elegidos
+        std::vector<int> restantes;
+        for (int i = 0; i < agentes.size(); ++i){restantes.push_back(i);}
+        std::vector<int> elegidos;
+
+        if(poda){confiablesConPodasAux(agentes, restantes, elegidos);}
+        else{confiablesSinPodasAux(agentes, restantes, elegidos);}
+
+    }
+
+    else{
+
+        std::vector<std::vector<std::vector<int> > > setDatos = parseador(inputPath);
+        std::cout << "me viole" << std::endl;
+        for (int i = 0; i < setDatos.size(); ++i)
+        {
+            for (int j = 0; j < setDatos[i].size(); ++j)
+            {
+                imprimirVector(setDatos[i][j]);
+            }
         }
+
     }
 
-    std::cout << std::endl << "Ingrese la cantidad de votos:" << std::endl;
-    int cantidadVotos;
-    std::cin >> cantidadVotos;
 
-    std::cout << std::endl << "Ingrese todos los votantes con cada voto:" << std::endl;
-    for (int i = 0; i < cantidadVotos; ++i){
-        int votante;
-        std::cin >> votante;
-        int voto;
-        std::cin >> voto;
-        agentes[votante-1][modulo(voto)-1] = signo(voto);
-    }
-
-    //creamos restantes y elegidos
-    std::vector<int> restantes;
-    for (int i = 0; i < cantidadAgentes; ++i){
-        restantes.push_back(i);
-    }
-    std::vector<int> elegidos;
-
-
-    if(poda){confiablesConPodasAux(agentes, restantes, elegidos);}
-    else{confiablesSinPodasAux(agentes, restantes, elegidos);}
-
+    return 0;
 }
