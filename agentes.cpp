@@ -65,7 +65,7 @@ std::cout << "deberian ESTAAAAAAAAA" << std::endl;
 }
 
 
-void confiablesSinPodasAux(std::vector< std::vector<int> > agentes, std::vector<int>& restantes, std::vector<int>& elegidos){
+void confiablesSinPodasAux(std::vector< std::vector<int> >& agentes, std::vector<int>& restantes, std::vector<int>& elegidos){
 
     if(restantes.size() == 0 && estanTodosLosQueDeberian(agentes, elegidos)){
         //llegué al final
@@ -97,7 +97,7 @@ std::cout << "aca me rompo 4" << std::endl;
 }
 
 
-void confiablesConPodasAux(std::vector< std::vector<int> > agentes, std::vector<int>& restantes, std::vector<int>& elegidos){
+void confiablesConPodasAux(std::vector< std::vector<int> >& agentes, std::vector<int>& restantes, std::vector<int>& elegidos){
 
     if(restantes.size() == 0 && estanTodosLosQueDeberian(agentes, elegidos)){
         //llegué al final
