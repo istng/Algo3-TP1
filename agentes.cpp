@@ -4,7 +4,7 @@
 bool puedoAgregarlo(std::vector< std::vector<int> > agentes, std::vector<int>& elegidos, int actual){
     bool res = true;
     for (int i = 0; i < elegidos.size(); ++i){
-        if (agentes[elegidos[i]][actual] == -1 || agentes[actual][elegidos[i]] == -1){res = false;}
+        if (agentes[elegidos[i]][actual] == -1 || agentes[actual][elegidos[i]] == -1){res = false; break;}
     }
     return res;
 }
@@ -12,8 +12,12 @@ bool puedoAgregarlo(std::vector< std::vector<int> > agentes, std::vector<int>& e
 bool puedoAgregarloConPoda(std::vector< std::vector<int> > agentes, std::vector<int>& elegidos, int actual){
     bool res = true;
     for (int i = 0; i < elegidos.size(); ++i){
+        if (agentes[elegidos[i]][actual] == -1 || agentes[actual][elegidos[i]] == -1){res = false; break;}
         for (int j = 0; j < agentes.size(); ++j){
-            if(agentes[i][j] == -1 || agentes[actual][j] == -1) {res = false;}
+            if(agentes[elegidos[i]][j] + agentes[actual][j] == 0 && modulo(agentes[elegidos[i]][j]) > 0) {
+                res = false;
+                break;
+            }
         }
     }
     return res;
@@ -26,7 +30,7 @@ bool valeLaPena(std::vector< std::vector<int> > agentes, std::vector<int>& resta
         if(agentes[actual][i] == 1){
             //cada vez que es un voto positivo, me fijo si este que debería agregar vota en contra a uno ya elegido
             for (int j = 0; j < elegidos.size(); ++j){
-                if(agentes[i][j] == -1){res = false;}
+                if(agentes[i][elegidos[j]] == -1){res = false; break;}
             }
         }
     }
@@ -37,14 +41,14 @@ bool valeLaPena(std::vector< std::vector<int> > agentes, std::vector<int>& resta
 bool habiaQueAgregarlo(std::vector< std::vector<int> > agentes, std::vector<int>& elegidos, int actual){
     bool res = false;
     for (int i = 0; i < elegidos.size(); ++i){
-        if (agentes[i][actual] == 1){res = true;}
+        if (agentes[elegidos[i]][actual] == 1){res = true; break;}
     }
 
     return res;
 }
 
 
-bool esConsistente(std::vector<std::vector<int > >& agentes, std::vector<int>& elegidos){
+bool estanTodosLosQueDeberian(std::vector<std::vector<int > >& agentes, std::vector<int>& elegidos){
     bool res = true;
     for (int i = 0; i < elegidos.size(); ++i){
         for (int j = 0; j < agentes.size(); ++j){
@@ -60,7 +64,36 @@ bool esConsistente(std::vector<std::vector<int > >& agentes, std::vector<int>& e
 
 void confiablesSinPodasAux(std::vector< std::vector<int> > agentes, std::vector<int>& restantes, std::vector<int>& elegidos){
 
-    if(restantes.size() == 0 && esConsistente(agentes, elegidos)){
+    if(restantes.size() == 0 && estanTodosLosQueDeberian(agentes, elegidos)){
+        //llegué al final
+
+        //por ahora, muestro el conjunto resultante
+        imprimirVector(elegidos);
+
+    } else {
+
+            int actual = restantes[0];                                  //tomo el primero de los restantes restantes
+            restantes.erase(restantes.begin());                         //lo quito, para no repetirlo en próximos llamados
+
+            elegidos.push_back(actual);                                 //con el agente actual
+            if(puedoAgregarlo(agentes, elegidos, actual)){              //me fijo si puedo agregar o no al agente al conjunto actual
+                confiablesSinPodasAux(agentes, restantes, elegidos);
+            }
+
+            if(elegidos.size() != 0){elegidos.pop_back();}              //sin el agente actual
+            if(!habiaQueAgregarlo(agentes, elegidos, actual)){          //si no hacia falta agregar al actual, seguimos
+                confiablesSinPodasAux(agentes, restantes, elegidos);
+            }
+
+
+            restantes.insert(restantes.begin(), actual);
+    }
+}
+
+
+void confiablesConPodasAux(std::vector< std::vector<int> > agentes, std::vector<int>& restantes, std::vector<int>& elegidos){
+
+    if(restantes.size() == 0 && estanTodosLosQueDeberian(agentes, elegidos)){
         //llegué al final
 
         //por ahora, muestro el conjunto resultante
@@ -72,44 +105,13 @@ void confiablesSinPodasAux(std::vector< std::vector<int> > agentes, std::vector<
             restantes.erase(restantes.begin());                         //lo quito, para no repetirlo en próximos llamados
 
             elegidos.push_back(actual);                                 //con el agente actual
-            if(puedoAgregarlo(agentes, elegidos, actual)){              //me fijo si puedo agregar o no al agente al conjunto actual
-                confiablesSinPodasAux(agentes, restantes, elegidos);
+            if(puedoAgregarloConPoda(agentes, elegidos, actual) && valeLaPena(agentes, restantes, elegidos, actual)){
+                                                                        //me fijo si puedo agregar o no al agente al conjunto actual
+                confiablesConPodasAux(agentes, restantes, elegidos);
             }
-    
+
             if(elegidos.size() != 0){elegidos.pop_back();}              //sin el agente actual
             if(!habiaQueAgregarlo(agentes, elegidos, actual)){          //si no hacia falta agregar al actual, seguimos
-                confiablesSinPodasAux(agentes, restantes, elegidos);
-            }
-
-            
-            restantes.insert(restantes.begin(), actual);
-    }
-}
-
-
-void confiablesConPodasAux(std::vector< std::vector<int> > agentes, std::vector<int>& restantes, std::vector<int>& elegidos){
-
-    if(restantes.size() == 0){
-        //llegué al final
-
-        //por ahora, muestro el conjunto resultante
-        imprimirVector(elegidos);
-    
-    } else {
-
-            int actual = restantes[0];                                  //tomo el primero de los restantes restantes
-            restantes.erase(restantes.begin());                         //lo quito, para no repetirlo en próximos llamados
-
-
-            if(puedoAgregarloConPoda(agentes, elegidos, actual)){       //me fijo si puedo agregar o no al agente al conjunto actual
-                if(valeLaPena(agentes, restantes, elegidos, actual)){    //utilizo mis condiciones de poda de soluciones válidas
-                    elegidos.push_back(actual);             			//con el agente actual
-                    confiablesConPodasAux(agentes, restantes, elegidos);
-                }
-            }
-    
-            if(habiaQueAgregarlo(agentes, elegidos, actual)){           //si algun elegido lo necesitaba, cortamos aca porque la instancia sería invalida
-                if(elegidos.size() != 0){elegidos.pop_back();}		    //sin el agente actual
                 confiablesConPodasAux(agentes, restantes, elegidos);
             }
 
@@ -130,7 +132,7 @@ int main(int argc, char** argv){
     }
 
     //cambiar en cuanto este bien lo de python
-    bool poda = false;
+    bool poda = true;
     if(argc == 2 && argv[1] == "0"){poda = false;}
 
 
@@ -164,6 +166,7 @@ int main(int argc, char** argv){
         restantes.push_back(i);
     }
     std::vector<int> elegidos;
+
 
     if(poda){confiablesConPodasAux(agentes, restantes, elegidos);}
     else{confiablesSinPodasAux(agentes, restantes, elegidos);}
