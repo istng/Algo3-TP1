@@ -63,20 +63,19 @@ bool estanTodosLosQueDeberian(std::vector<std::vector<int > >& agentes, std::vec
 }
 
 
-void confiablesSinPodasAux(std::vector< std::vector<int> >& agentes, std::vector<int>& restantes, std::vector<int>& elegidos){
+void confiablesSinPodasAux(std::vector< std::vector<int> >& agentes, std::vector<int>& restantes, std::vector<int>& elegidos, std::vector<std::vector<int > >& finalistas, int& maximoActual){
 
     if(restantes.empty()){
         //llegué al final
-
-        //por ahora, muestro el conjunto resultante
         if (estanTodosLosQueDeberian(agentes, elegidos)){
-            std::cout << "aca tenes el coso: ";
-            imprimirVector(elegidos);
-        } else {
-            //utilize todos los restantes, pero faltaba un necesario en elegidos
-            std::cout << "YOU DIED" << std::endl;
+            if (elegidos.size() == maximoActual){
+                finalistas.push_back(elegidos);
+            } else if (elegidos.size() > maximoActual){
+                maximoActual = elegidos.size();
+                if(finalistas.size() > 0){finalistas.empty();}
+                finalistas.push_back(elegidos);
+            }
         }
-
 
     } else {
 
@@ -85,12 +84,12 @@ void confiablesSinPodasAux(std::vector< std::vector<int> >& agentes, std::vector
 
             elegidos.push_back(actual);                                 //con el agente actual
             if(puedoAgregarlo(agentes, elegidos, actual)){              //me fijo si puedo agregar o no al agente al conjunto actual
-                confiablesSinPodasAux(agentes, restantes, elegidos);
+                confiablesSinPodasAux(agentes, restantes, elegidos, finalistas, maximoActual);
             }
 
             if(elegidos.size() != 0){elegidos.pop_back();}              //sin el agente actual
             if(!habiaQueAgregarlo(agentes, elegidos, actual)){          //si no hacia falta agregar al actual, seguimos
-                confiablesSinPodasAux(agentes, restantes, elegidos);
+                confiablesSinPodasAux(agentes, restantes, elegidos, finalistas, maximoActual);
             }
 
 
@@ -98,19 +97,28 @@ void confiablesSinPodasAux(std::vector< std::vector<int> >& agentes, std::vector
     }
 }
 
+std::vector<std::vector<int> > confiablesSinPodas(std::vector< std::vector<int> >& agentes, std::vector<int>& restantes, std::vector<int>& elegidos){
+    std::vector<std::vector<int > > finalistas;
+    int maximoActual = 0;
+    confiablesSinPodasAux(agentes, restantes, elegidos, finalistas, maximoActual);
 
-void confiablesConPodasAux(std::vector< std::vector<int> >& agentes, std::vector<int>& restantes, std::vector<int>& elegidos){
+    std::cout << maximoActual << std::endl;
+    return finalistas;
+}
+
+
+void confiablesConPodasAux(std::vector< std::vector<int> >& agentes, std::vector<int>& restantes, std::vector<int>& elegidos, std::vector<std::vector<int > >& finalistas, int& maximoActual){
 
     if(restantes.empty()){
         //llegué al final
-
-        //por ahora, muestro el conjunto resultante
         if (estanTodosLosQueDeberian(agentes, elegidos)){
-            std::cout << "aca tenes el coso: ";
-            imprimirVector(elegidos);
-        } else {
-            //utilize todos los restantes, pero faltaba un necesario en elegidos
-            std::cout << "YOU DIED" << std::endl;
+            if (elegidos.size() == maximoActual){
+                finalistas.push_back(elegidos);
+            } else if (elegidos.size() > maximoActual){
+                maximoActual = elegidos.size();
+                if(finalistas.size() > 0){finalistas.empty();}
+                finalistas.push_back(elegidos);
+            }
         }
     
     } else {
@@ -121,19 +129,26 @@ void confiablesConPodasAux(std::vector< std::vector<int> >& agentes, std::vector
             elegidos.push_back(actual);                                 //con el agente actual
             if(puedoAgregarloConPoda(agentes, elegidos, actual) && valeLaPena(agentes, restantes, elegidos, actual)){
                                                                         //me fijo si puedo agregar o no al agente al conjunto actual
-                confiablesConPodasAux(agentes, restantes, elegidos);
+                confiablesConPodasAux(agentes, restantes, elegidos, finalistas, maximoActual);
             }
 
             if(elegidos.size() != 0){elegidos.pop_back();}              //sin el agente actual
             if(!habiaQueAgregarlo(agentes, elegidos, actual)){          //si no hacia falta agregar al actual, seguimos
-                confiablesConPodasAux(agentes, restantes, elegidos);
+                confiablesConPodasAux(agentes, restantes, elegidos, finalistas, maximoActual);
             }
 
             restantes.insert(restantes.begin(), actual);
     }
 }
 
+std::vector<std::vector<int> > confiablesConPodas(std::vector< std::vector<int> >& agentes, std::vector<int>& restantes, std::vector<int>& elegidos){
+    std::vector<std::vector<int > > finalistas;
+    int maximoActual = 0;
+    confiablesConPodasAux(agentes, restantes, elegidos, finalistas, maximoActual);
 
+    std::cout << maximoActual << std::endl;
+    return finalistas;
+}
 
 int main(int argc, char** argv){
 
@@ -173,9 +188,12 @@ int main(int argc, char** argv){
             for (int j = 0; j < setDatos[i].size(); ++j){restantes.push_back(j);}
             std::vector<int> elegidos;
 
-
-            if(poda){confiablesConPodasAux(setDatos[i], restantes, elegidos);}
-            else{confiablesSinPodasAux(setDatos[i], restantes, elegidos);}
+            std::vector<std::vector<int > > finalistas;
+            if(!poda){
+                finalistas = confiablesSinPodas(setDatos[i], restantes, elegidos);
+            } else {
+                finalistas = confiablesConPodas(setDatos[i], restantes, elegidos);
+            }
         }
 
     }
@@ -193,8 +211,12 @@ int main(int argc, char** argv){
             std::vector<int> elegidos;
 
 
-            if(poda){confiablesConPodasAux(setDatos[i], restantes, elegidos);}
-            else{confiablesSinPodasAux(setDatos[i], restantes, elegidos);}
+            std::vector<std::vector<int > > finalistas;
+            if(poda){
+                finalistas = confiablesSinPodas(setDatos[i], restantes, elegidos);
+            } else {
+                finalistas = confiablesConPodas(setDatos[i], restantes, elegidos);
+            }
         }
 
     }
