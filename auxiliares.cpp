@@ -11,7 +11,6 @@ int modulo(int a);
 int signo(int a);
 
 
-//std::vector<std::vector<int > > entradaManual();
 void entradaManual(std::vector<std::vector<std::vector<int > > >& setDatos);
 std::vector<std::vector<std::vector<int> > > parseador(std::string inputPath);
 void agregarAlSet(std::ifstream& input, std::vector<std::vector<std::vector<int> > >& setDatos);
@@ -55,41 +54,6 @@ int signo(int a){
     if(a < 0){res = -1;}
     return res;
 }
-
-/*
-std::vector<std::vector<int > > entradaManual(){
-    std::cout << std::endl << "Ingrese la cantidad de agentes:" << std::endl;
-    int cantidadAgentes = 0;
-    std::cin >> cantidadAgentes;
-    //creamos el vector de vectores de agentes, todo en cero
-    std::vector<std::vector<int > > agentes(cantidadAgentes);
-    for (int i = 0; i < cantidadAgentes; ++i){
-        for (int j = 0; j < cantidadAgentes; ++j){
-            agentes[i].push_back(0);
-        }
-    }
-
-    std::cout << std::endl << "Ingrese la cantidad de votos:" << std::endl;
-    int cantidadVotos;
-    std::cin >> cantidadVotos;
-
-    for (int i = 0; i < cantidadAgentes; ++i){
-        for (int j = 0; j < cantidadAgentes; ++j){
-            agentes[i].push_back(0);
-        }
-    }
-
-    std::cout << std::endl << "Ingrese todos los votantes con cada voto:" << std::endl;
-    for (int i = 0; i < cantidadVotos; ++i){
-        int votante;
-        std::cin >> votante;
-        int voto;
-        std::cin >> voto;
-        agentes[votante-1][modulo(voto)-1] = signo(voto);
-    }
-
-    return agentes;
-}*/
 
 void entradaManual(std::vector<std::vector<std::vector<int > > >& setDatos){
 

@@ -26,8 +26,8 @@ void partes(std::vector<int>& conjunto, std::vector<int>& parte){
 int main(){
 
     std::vector<int> conjunto;
-    for (int i = 0; i < 5; ++i){
-        conjunto.push_back(i+1);
+    for (int i = 0; i < 4; ++i){
+        conjunto.push_back(i);
     }
 
     std::vector<int> parte;

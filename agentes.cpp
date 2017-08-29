@@ -1,6 +1,20 @@
 //#include "auxiliares.h"
 #include "auxiliares.cpp"
 
+bool puedoAgregarlo(std::vector< std::vector<int> > agentes, std::vector<int>& elegidos, int actual);
+bool puedoAgregarloConPoda(std::vector< std::vector<int> > agentes, std::vector<int>& elegidos, int actual);
+bool puedoAgregarloConPoda(std::vector< std::vector<int> > agentes, std::vector<int>& elegidos, int actual);
+bool valeLaPena(std::vector< std::vector<int> > agentes, std::vector<int>& restantes, std::vector<int>& elegidos, int actual);
+bool habiaQueAgregarlo(std::vector< std::vector<int> >& agentes, std::vector<int>& elegidos, int actual);
+bool estanTodosLosQueDeberian(std::vector<std::vector<int > >& agentes, std::vector<int>& elegidos);
+std::vector<std::vector<int> > confiablesSinPodas(std::vector< std::vector<int> >& agentes, std::vector<int>& restantes, std::vector<int>& elegidos);
+void confiablesSinPodasAux(std::vector< std::vector<int> >& agentes, std::vector<int>& restantes, std::vector<int>& elegidos, std::vector<std::vector<int > >& finalistas, int& maximoActual);
+std::vector<std::vector<int> > confiablesConPodas(std::vector< std::vector<int> >& agentes, std::vector<int>& restantes, std::vector<int>& elegidos);
+void confiablesConPodasAux(std::vector< std::vector<int> >& agentes, std::vector<int>& restantes, std::vector<int>& elegidos, std::vector<std::vector<int > >& finalistas, int& maximoActual);
+
+//
+
+
 bool puedoAgregarlo(std::vector< std::vector<int> > agentes, std::vector<int>& elegidos, int actual){
     bool res = true;
     for (int i = 0; i < elegidos.size(); ++i){
@@ -62,6 +76,15 @@ bool estanTodosLosQueDeberian(std::vector<std::vector<int > >& agentes, std::vec
     return res;
 }
 
+std::vector<std::vector<int> > confiablesSinPodas(std::vector< std::vector<int> >& agentes, std::vector<int>& restantes, std::vector<int>& elegidos){
+    std::vector<std::vector<int > > finalistas;
+    int maximoActual = 0;
+    confiablesSinPodasAux(agentes, restantes, elegidos, finalistas, maximoActual);
+
+    std::cout << maximoActual << std::endl;
+    return finalistas;
+}
+
 
 void confiablesSinPodasAux(std::vector< std::vector<int> >& agentes, std::vector<int>& restantes, std::vector<int>& elegidos, std::vector<std::vector<int > >& finalistas, int& maximoActual){
 
@@ -97,15 +120,15 @@ void confiablesSinPodasAux(std::vector< std::vector<int> >& agentes, std::vector
     }
 }
 
-std::vector<std::vector<int> > confiablesSinPodas(std::vector< std::vector<int> >& agentes, std::vector<int>& restantes, std::vector<int>& elegidos){
+
+std::vector<std::vector<int> > confiablesConPodas(std::vector< std::vector<int> >& agentes, std::vector<int>& restantes, std::vector<int>& elegidos){
     std::vector<std::vector<int > > finalistas;
     int maximoActual = 0;
-    confiablesSinPodasAux(agentes, restantes, elegidos, finalistas, maximoActual);
+    confiablesConPodasAux(agentes, restantes, elegidos, finalistas, maximoActual);
 
     std::cout << maximoActual << std::endl;
     return finalistas;
 }
-
 
 void confiablesConPodasAux(std::vector< std::vector<int> >& agentes, std::vector<int>& restantes, std::vector<int>& elegidos, std::vector<std::vector<int > >& finalistas, int& maximoActual){
 
@@ -141,14 +164,6 @@ void confiablesConPodasAux(std::vector< std::vector<int> >& agentes, std::vector
     }
 }
 
-std::vector<std::vector<int> > confiablesConPodas(std::vector< std::vector<int> >& agentes, std::vector<int>& restantes, std::vector<int>& elegidos){
-    std::vector<std::vector<int > > finalistas;
-    int maximoActual = 0;
-    confiablesConPodasAux(agentes, restantes, elegidos, finalistas, maximoActual);
-
-    std::cout << maximoActual << std::endl;
-    return finalistas;
-}
 
 int main(int argc, char** argv){
 
@@ -167,16 +182,8 @@ int main(int argc, char** argv){
     std::string inputPath;
     if (argc == 3){inputPath = argv[2];}
 
-    //elección entre entrada manual o con un .in
+    //elección entre entrada manual (stdin) o con un .in
     if (argc < 3){
-        /*std::vector<std::vector<int > > agentes = entradaManual();
-        //creamos restantes y elegidos
-        std::vector<int> restantes;
-        for (int i = 0; i < agentes.size(); ++i){restantes.push_back(i);}
-        std::vector<int> elegidos;
-
-        if(poda){confiablesConPodasAux(agentes, restantes, elegidos);}
-        else{confiablesSinPodasAux(agentes, restantes, elegidos);}*/
 
         //parseo los datos pasados
         std::vector<std::vector<std::vector<int> > > setDatos;
@@ -196,13 +203,10 @@ int main(int argc, char** argv){
             }
         }
 
-    }
-
-    else{
+    } else {
 
         //parseo los datos pasados
         std::vector<std::vector<std::vector<int> > > setDatos = parseador(inputPath);
-
 
         for (int i = 0; i < setDatos.size(); ++i){
             //creamos restantes y elegidos
