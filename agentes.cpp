@@ -38,7 +38,7 @@ bool valeLaPena(std::vector< std::vector<int> > agentes, std::vector<int>& resta
 }
 
 
-bool habiaQueAgregarlo(std::vector< std::vector<int> > agentes, std::vector<int>& elegidos, int actual){
+bool habiaQueAgregarlo(std::vector< std::vector<int> >& agentes, std::vector<int>& elegidos, int actual){
     bool res = false;
     for (int i = 0; i < elegidos.size(); ++i){
         if (agentes[elegidos[i]][actual] == 1){res = true; break;}
@@ -50,12 +50,10 @@ bool habiaQueAgregarlo(std::vector< std::vector<int> > agentes, std::vector<int>
 
 bool estanTodosLosQueDeberian(std::vector<std::vector<int > >& agentes, std::vector<int>& elegidos){
     bool res = true;
+
     for (int i = 0; i < elegidos.size(); ++i){
-std::cout << "deberian i " << i << std::endl;
         for (int j = 0; j < agentes.size(); ++j){
-std::cout << "deberian j " << j << std::endl;
             if (agentes[elegidos[i]][j] == 1 && !esta(elegidos, j)){
-std::cout << "deberian ESTAAAAAAAAA" << std::endl;
                 res = false;
                 break;
             }
@@ -67,31 +65,45 @@ std::cout << "deberian ESTAAAAAAAAA" << std::endl;
 
 void confiablesSinPodasAux(std::vector< std::vector<int> >& agentes, std::vector<int>& restantes, std::vector<int>& elegidos){
 
-    if(restantes.size() == 0 && estanTodosLosQueDeberian(agentes, elegidos)){
+    if(restantes.empty()){
         //llegué al final
-std::cout << "aca me rompo 1" << std::endl;
+
         //por ahora, muestro el conjunto resultante
-        imprimirVector(elegidos);
+    	if (estanTodosLosQueDeberian(agentes, elegidos))
+    	{
+    		std::cout << "aca tenes el coso: ";
+    		imprimirVector(elegidos);
+    	} else {
+    		std::cout << "YOU DIED" << std::endl;
+    	}
+
+
 
     } else {
 
             int actual = restantes[0];                                  //tomo el primero de los restantes restantes
-            restantes.erase(restantes.begin());                         //lo quito, para no repetirlo en próximos llamados
-std::cout << "aca me rompo 2" << std::endl;
-            elegidos.push_back(actual);                                 //con el agente actual
-std::cout << "aca me rompo 2 bis" << std::endl;
-            if(puedoAgregarlo(agentes, elegidos, actual)){              //me fijo si puedo agregar o no al agente al conjunto actual
-std::cout << "aca me rompo 2 bios " << restantes.size() << std::endl;
-                confiablesSinPodasAux(agentes, restantes, elegidos);
-std::cout << "aca me rompo 2 be" << std::endl;
+            
+            if (restantes.size() > 1)
+            {
+            	restantes.erase(restantes.begin());                         //lo quito, para no repetirlo en próximos llamados
+            } else {
+            	restantes.clear();
             }
-std::cout << "aca me rompo 3" << std::endl;
+
+            elegidos.push_back(actual);                                 //con el agente actual
+
+            if(puedoAgregarlo(agentes, elegidos, actual)){              //me fijo si puedo agregar o no al agente al conjunto actual
+
+                confiablesSinPodasAux(agentes, restantes, elegidos);
+
+            }
+
             if(elegidos.size() != 0){elegidos.pop_back();}              //sin el agente actual
             if(!habiaQueAgregarlo(agentes, elegidos, actual)){          //si no hacia falta agregar al actual, seguimos
                 confiablesSinPodasAux(agentes, restantes, elegidos);
             }
 
-std::cout << "aca me rompo 4" << std::endl;
+
             restantes.insert(restantes.begin(), actual);
     }
 }
@@ -173,20 +185,13 @@ int main(int argc, char** argv){
 */
         for (int i = 0; i < setDatos.size(); ++i){
             //creamos restantes y elegidos
-std::cout << "aca1 " << i << std::endl;
             std::vector<int> restantes;
             for (int j = 0; j < setDatos[i].size(); ++j){restantes.push_back(j);}
             std::vector<int> elegidos;
 
-std::cout << "aca2 " << i << std::endl;
-for (int j = 0; j < setDatos[i].size(); ++j)
-{
-    imprimirVector(setDatos[i][j]);
-}
 
             if(poda){confiablesConPodasAux(setDatos[i], restantes, elegidos);}
             else{confiablesSinPodasAux(setDatos[i], restantes, elegidos);}
-std::cout << "aca3 " << i << std::endl;
         }
 
     }
