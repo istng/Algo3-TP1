@@ -10,10 +10,12 @@ bool esta(std::vector<int> v, int a);
 int modulo(int a);
 int signo(int a);
 
+void normalizar(std::vector<std::vector<int> >& v);
 
 void entradaManual(std::vector<std::vector<std::vector<int > > >& setDatos);
 std::vector<std::vector<std::vector<int> > > parseador(std::string inputPath);
 void agregarAlSet(std::ifstream& input, std::vector<std::vector<std::vector<int> > >& setDatos);
+
 
 
 //
@@ -53,6 +55,18 @@ int signo(int a){
     int res = 1;
     if(a < 0){res = -1;}
     return res;
+}
+
+void normalizar(std::vector<std::vector<int> >& v){
+    if(!v.empty()){
+        for (int i = 0; i < v.size(); ++i){
+            for (int j = 0; j < v[i].size(); ++j){
+                if(!v[i].empty()){
+                    v[i][j] = v[i][j] + 1;
+                }
+            }
+        }
+    }
 }
 
 void entradaManual(std::vector<std::vector<std::vector<int > > >& setDatos){

@@ -201,6 +201,8 @@ int main(int argc, char** argv){
             } else {
                 finalistas = confiablesConPodas(setDatos[i], restantes, elegidos);
             }
+
+            normalizar(finalistas);
         }
 
     } else {
@@ -221,6 +223,8 @@ int main(int argc, char** argv){
             } else {
                 finalistas = confiablesConPodas(setDatos[i], restantes, elegidos);
             }
+
+            normalizar(finalistas);
         }
 
     }

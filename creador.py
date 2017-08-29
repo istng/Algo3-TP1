@@ -10,6 +10,9 @@ for i in range(1,cantidadAgentes+1):
 	for j in range(1,cantidadAgentes+1):
 		votosPosibles.append(((i,j),(i,-j)))
 
+votosElegidos = []
+
+print(str(cantidadAgentes) + " " + str(cantidadVotos))
 
 for i in range(1,cantidadVotos+1):
     secure_random_votos = random.SystemRandom()
@@ -20,4 +23,8 @@ for i in range(1,cantidadVotos+1):
 
     votosPosibles.remove(votos)
 
-    print(voto)
+    print(str(voto[0]) + " " + str(voto[1]))
+
+    votosElegidos.append(voto)
+
+print("0 0")
