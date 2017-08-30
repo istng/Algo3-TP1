@@ -15,6 +15,7 @@ std::vector<std::vector<int> > confiablesSinPodas(std::vector< std::vector<int> 
 void confiablesSinPodasAux(std::vector< std::vector<int> >& agentes, std::vector<int>& restantes, std::vector<int>& elegidos, std::vector<std::vector<int > >& finalistas, int& maximoActual);
 std::vector<std::vector<int> > confiablesConPodas(std::vector< std::vector<int> >& agentes, std::vector<int>& restantes, std::vector<int>& elegidos);
 void confiablesConPodasAux(std::vector< std::vector<int> >& agentes, std::vector<int>& restantes, std::vector<int>& elegidos, std::vector<std::vector<int > >& finalistas, int& maximoActual);
+bool pasoElMaximo(int restTam, int elegTam, int maximoActual);
 
 //
 
@@ -80,6 +81,12 @@ bool estanTodosLosQueDeberian(std::vector<std::vector<int > >& agentes, std::vec
     return res;
 }
 
+
+bool pasoElMaximo(int restTam, int elegTam, int maximoActual){
+    return restTam + elegTam > maximoActual;
+}
+
+
 std::vector<std::vector<int> > confiablesSinPodas(std::vector< std::vector<int> >& agentes, std::vector<int>& restantes, std::vector<int>& elegidos){
     std::vector<std::vector<int > > finalistas;
     int maximoActual = 0;
@@ -110,12 +117,12 @@ void confiablesSinPodasAux(std::vector< std::vector<int> >& agentes, std::vector
             restantes.erase(restantes.begin());                         //lo quito, para no repetirlo en próximos llamados
 
             elegidos.push_back(actual);                                 //con el agente actual
-            if(puedoAgregarlo(agentes, elegidos, actual)){              //me fijo si puedo agregar o no al agente al conjunto actual
+            if(puedoAgregarlo(agentes, elegidos, actual) && pasoElMaximo(restantes.size(), elegidos.size(), maximoActual)){              //me fijo si puedo agregar o no al agente al conjunto actual
                 confiablesSinPodasAux(agentes, restantes, elegidos, finalistas, maximoActual);
             }
 
             if(elegidos.size() != 0){elegidos.pop_back();}              //sin el agente actual
-            if(!habiaQueAgregarlo(agentes, elegidos, actual)){          //si no hacia falta agregar al actual, seguimos
+            if(!habiaQueAgregarlo(agentes, elegidos, actual) && pasoElMaximo(restantes.size(), elegidos.size(), maximoActual)){          //si no hacia falta agregar al actual, seguimos
                 confiablesSinPodasAux(agentes, restantes, elegidos, finalistas, maximoActual);
             }
 
@@ -154,13 +161,13 @@ void confiablesConPodasAux(std::vector< std::vector<int> >& agentes, std::vector
             restantes.erase(restantes.begin());                         //lo quito, para no repetirlo en próximos llamados
 
             elegidos.push_back(actual);                                 //con el agente actual
-            if(puedoAgregarloConPoda(agentes, elegidos, actual) && valeLaPena(agentes, restantes, elegidos, actual)){
+            if(puedoAgregarloConPoda(agentes, elegidos, actual) && valeLaPena(agentes, restantes, elegidos, actual) && pasoElMaximo(restantes.size(), elegidos.size(), maximoActual)){
                                                                         //me fijo si puedo agregar o no al agente al conjunto actual
                 confiablesConPodasAux(agentes, restantes, elegidos, finalistas, maximoActual);
             }
 
             if(elegidos.size() != 0){elegidos.pop_back();}              //sin el agente actual
-            if(!habiaQueAgregarlo(agentes, elegidos, actual)){          //si no hacia falta agregar al actual, seguimos
+            if(!habiaQueAgregarlo(agentes, elegidos, actual) && pasoElMaximo(restantes.size(), elegidos.size(), maximoActual)){          //si no hacia falta agregar al actual, seguimos
                 confiablesConPodasAux(agentes, restantes, elegidos, finalistas, maximoActual);
             }
 
@@ -171,93 +178,47 @@ void confiablesConPodasAux(std::vector< std::vector<int> >& agentes, std::vector
 
 int main(int argc, char** argv){
 
-    if (!(argc == 3 || argc == 2 || argc == 1)){
+    if (!(argc == 2 || argc == 1)){
         std::cout << std::endl << "Error en los parametros de entrada. Los parametros correctos son:" << std::endl;
-        std::cout << std::endl << "./agentes <activar podas> <datos.in>" << std::endl;
+        std::cout << std::endl << "./agentes <activar podas>" << std::endl;
         std::cout << std::endl << "Activar podas: 1 para activarlas, 0 para desactivarlas." << std::endl;
         std::cout << "Si no se aclara, por defecto será 1." << std::endl;
-        std::cout << "Si no se especifican datos de entrada, se utiliza entrada manual." << std::endl;
         return -1;
     }
     
     //cambiar che cambiar
     int poda = 0;
     if(argc > 1){poda = std::atoi(argv[1]);}
-    std::string inputPath;
-    if (argc == 3){inputPath = argv[2];}
 
     //elección entre entrada manual (stdin) o con un .in
-    if (argc < 3){
 
-        //parseo los datos pasados
-        std::vector<std::vector<std::vector<int> > > setDatos;
-        entradaManual(setDatos);
-
-        std::cout << "tam,tiempo" << std::endl;
-
-        for (int i = 0; i < setDatos.size(); ++i){
-            //creamos restantes y elegidos
-            std::vector<int> restantes;
-            for (int j = 0; j < setDatos[i].size(); ++j){restantes.push_back(j);}
-            std::vector<int> elegidos;
-
-            std::chrono::high_resolution_clock::time_point t1;
-            std::chrono::high_resolution_clock::time_point t2;
-            std::chrono::duration<double> time_span;
-
-
-            std::vector<std::vector<int > > finalistas;
-            if(!poda){
-                t1 = now();
-                finalistas = confiablesSinPodas(setDatos[i], restantes, elegidos);
-                t2 = now();
-                time_span = std::chrono::duration_cast<std::chrono::duration<double> >(t2-t1);
-                std::cout << "," << time_span.count() << std::endl;
-            } else {
-                t1 = now();
-                finalistas = confiablesConPodas(setDatos[i], restantes, elegidos);
-                t2 = now();
-                time_span = std::chrono::duration_cast<std::chrono::duration<double> >(t2-t1);
-                std::cout << "," << time_span.count() << std::endl;
-            }
-
-            normalizar(finalistas);
+    //parseo los datos pasados
+    std::vector<std::vector<std::vector<int> > > setDatos;
+    entradaManual(setDatos);
+    std::cout << "tam,tiempo" << std::endl;
+    for (int i = 0; i < setDatos.size(); ++i){
+        //creamos restantes y elegidos
+        std::vector<int> restantes;
+        for (int j = 0; j < setDatos[i].size(); ++j){restantes.push_back(j);}
+        std::vector<int> elegidos;
+        std::chrono::high_resolution_clock::time_point t1;
+        std::chrono::high_resolution_clock::time_point t2;
+        std::chrono::duration<double> time_span;
+        std::vector<std::vector<int > > finalistas;
+        if(!poda){
+            t1 = now();
+            finalistas = confiablesSinPodas(setDatos[i], restantes, elegidos);
+            t2 = now();
+            time_span = std::chrono::duration_cast<std::chrono::duration<double> >(t2-t1);
+            std::cout << "," << time_span.count() << std::endl;
+        } else {
+            t1 = now();
+            finalistas = confiablesConPodas(setDatos[i], restantes, elegidos);
+            t2 = now();
+            time_span = std::chrono::duration_cast<std::chrono::duration<double> >(t2-t1);
+            std::cout << "," << time_span.count() << std::endl;
         }
-
-    } else {
-
-        //parseo los datos pasados
-        std::vector<std::vector<std::vector<int> > > setDatos = parseador(inputPath);
-
-        for (int i = 0; i < setDatos.size(); ++i){
-            //creamos restantes y elegidos
-            std::vector<int> restantes;
-            for (int j = 0; j < setDatos[i].size(); ++j){restantes.push_back(j);}
-            std::vector<int> elegidos;
-
-            //chrono::high_resolution_clock::time_point t1;
-            //chrono::high_resolution_clock::time_point t2;
-            //chrono::duration<double> time_span;
-
-
-            std::vector<std::vector<int > > finalistas;
-            if(poda){
-                //t1 = now();
-                finalistas = confiablesSinPodas(setDatos[i], restantes, elegidos);
-                //t2 = now();
-                //time_span = chrono::duration_cast<chrono::duration<double>>(t2-t1);
-                //std::cout << " " << time_span.count() << std::endl;
-            } else {
-                //t1 = now();
-                finalistas = confiablesConPodas(setDatos[i], restantes, elegidos);
-                //t2 = now();
-                //time_span = chrono::duration_cast<chrono::duration<double>>(t2-t1);
-                //std::cout << " " << time_span.count() << std::endl;
-            }
-
-            normalizar(finalistas);
-        }
-
+        normalizar(finalistas);
     }
 
 

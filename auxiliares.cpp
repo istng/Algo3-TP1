@@ -13,8 +13,6 @@ int signo(int a);
 void normalizar(std::vector<std::vector<int> >& v);
 
 void entradaManual(std::vector<std::vector<std::vector<int > > >& setDatos);
-std::vector<std::vector<std::vector<int> > > parseador(std::string inputPath);
-void agregarAlSet(std::ifstream& input, std::vector<std::vector<std::vector<int> > >& setDatos);
 
 
 
@@ -100,50 +98,6 @@ void entradaManual(std::vector<std::vector<std::vector<int > > >& setDatos){
         setDatos.push_back(agentes);
 
         entradaManual(setDatos);
-    }
-}
-
-
-
-std::vector<std::vector<std::vector<int> > > parseador(std::string inputPath){
-    std::vector<std::vector<std::vector<int> > > setDatos;
-
-    std::ifstream input( inputPath, std::ifstream::in );
-    
-    agregarAlSet(input, setDatos);
-    
-    return setDatos;
-}
-
-void agregarAlSet(std::ifstream& input, std::vector<std::vector<std::vector<int> > >& setDatos){
-
-    std::string lineaActual;
-    getline(input, lineaActual);
-
-    if (std::stoi(&lineaActual[0]) == 0 && std::atoi(&lineaActual[2]) == 0){
-        //no hacemos nada, llegamos al final
-    } else {
-        int cantidadAgentes = std::atoi(&lineaActual[0]);
-        int cantidadVotos = std::atoi(&lineaActual[2]);
-
-        std::vector<std::vector<int > > agentes(cantidadAgentes);
-        for (int i = 0; i < cantidadAgentes; ++i){
-            for (int j = 0; j < cantidadAgentes; ++j){
-                agentes[i].push_back(0);
-            }
-        }
-
-        for (int i = 0; i < cantidadVotos; ++i){
-            getline(input, lineaActual);
-            int votante = std::atoi(&lineaActual[0]);
-            int voto = std::atoi(&lineaActual[2]);
-
-            agentes[votante-1][modulo(voto)-1] = signo(voto);
-        }
-
-        setDatos.push_back(agentes);
-
-        agregarAlSet(input, setDatos);
     }
 }
 
