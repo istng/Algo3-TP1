@@ -2,29 +2,43 @@
 
 import random
 
-cantidadAgentes = 10
-cantidadVotos = 5
-votosPosibles = []
 
-for i in range(1,cantidadAgentes+1):
-	for j in range(1,cantidadAgentes+1):
-		votosPosibles.append(((i,j),(i,-j)))
+def encuesta(cantidadAgentes, cantidadVotos):
+    votosPosibles = []
+    for i in range(1,cantidadAgentes+1):
+    	for j in range(1,cantidadAgentes+1):
+            votosPosibles.append((i,j))
+            votosPosibles.append((i,-j))
 
-votosElegidos = []
+    print(str(cantidadAgentes) + " " + str(cantidadVotos))
+    
+    for i in range(1,cantidadVotos+1):
+        if(votosPosibles == []):
+            break
+        secure_random = random.SystemRandom()
+        voto = secure_random.choice(votosPosibles)
 
-print(str(cantidadAgentes) + " " + str(cantidadVotos))
+        votosPosibles.remove(voto)
+    
+        print(str(voto[0]) + " " + str(voto[1]))
 
-for i in range(1,cantidadVotos+1):
-    secure_random_votos = random.SystemRandom()
-    votos = secure_random_votos.choice(votosPosibles)
 
-    secure_random_voto = random.SystemRandom()
-    voto = secure_random_voto.choice(votos)
+def variarAgentes(cantidadAgentes, cantidadVotos):
+    for i in range(cantidadVotos, cantidadAgentes+1):
+        encuesta(i, cantidadVotos)
+    print("0 0")
 
-    votosPosibles.remove(votos)
+def variarVotos(cantidadAgentes, cantidadVotos):
+    for i in range(1, cantidadVotos+1):
+        encuesta(cantidadAgentes, i)
+    print("0 0")
 
-    print(str(voto[0]) + " " + str(voto[1]))
+def selector(tipo, cantidadAgentes, cantidadVotos):
+    if(tipo == 1):
+        variarAgentes(cantidadAgentes, cantidadVotos)
+    elif(tipo == 0):
+        variarVotos(cantidadAgentes, cantidadVotos)
 
-    votosElegidos.append(voto)
 
-print("0 0")
+if __name__ == '__main__':
+    selector()

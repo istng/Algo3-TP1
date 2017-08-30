@@ -1,5 +1,6 @@
-import subprocess
+#!/usr/bin/python
 
-process = subprocess.Popen('./agentes', stdin=subprocess.PIPE)
-process.stdin.write('4\n5\n1\n2\n1\n-4\n2\n-3\n3\n1\n3\n4')
-process.communicate()
+import creador
+
+
+creador.selector(0, 100, 10)
