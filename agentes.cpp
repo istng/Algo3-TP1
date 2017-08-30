@@ -193,6 +193,8 @@ int main(int argc, char** argv){
         std::vector<std::vector<std::vector<int> > > setDatos;
         entradaManual(setDatos);
 
+        std::cout << "tam,tiempo" << std::endl;
+
         for (int i = 0; i < setDatos.size(); ++i){
             //creamos restantes y elegidos
             std::vector<int> restantes;
@@ -203,19 +205,20 @@ int main(int argc, char** argv){
             std::chrono::high_resolution_clock::time_point t2;
             std::chrono::duration<double> time_span;
 
+
             std::vector<std::vector<int > > finalistas;
             if(!poda){
                 t1 = now();
                 finalistas = confiablesSinPodas(setDatos[i], restantes, elegidos);
                 t2 = now();
                 time_span = std::chrono::duration_cast<std::chrono::duration<double> >(t2-t1);
-                std::cout << " " << time_span.count() << std::endl;
+                std::cout << "," << time_span.count() << std::endl;
             } else {
                 t1 = now();
                 finalistas = confiablesConPodas(setDatos[i], restantes, elegidos);
                 t2 = now();
                 time_span = std::chrono::duration_cast<std::chrono::duration<double> >(t2-t1);
-                std::cout << " " << time_span.count() << std::endl;
+                std::cout << "," << time_span.count() << std::endl;
             }
 
             normalizar(finalistas);
