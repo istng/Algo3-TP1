@@ -93,7 +93,7 @@ void entradaManual(std::vector<std::vector<std::vector<int > > >& setDatos){
             if(agentes[votante-1][modulo(voto)-1] == 0){
             agentes[votante-1][modulo(voto)-1] = signo(voto);
             } else if(agentes[votante-1][modulo(voto)-1] != signo(voto)){
-                agentes[votante-1][votante] = -1;
+                agentes[votante-1][votante-1] = -1;
             }
         }
 
