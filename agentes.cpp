@@ -1,5 +1,9 @@
 //#include "auxiliares.h"
 #include "auxiliares.cpp"
+#include <chrono>
+
+#define now std::chrono::high_resolution_clock::now
+
 
 bool puedoAgregarlo(std::vector< std::vector<int> > agentes, std::vector<int>& elegidos, int actual);
 bool puedoAgregarloConPoda(std::vector< std::vector<int> > agentes, std::vector<int>& elegidos, int actual);
@@ -81,7 +85,7 @@ std::vector<std::vector<int> > confiablesSinPodas(std::vector< std::vector<int> 
     int maximoActual = 0;
     confiablesSinPodasAux(agentes, restantes, elegidos, finalistas, maximoActual);
 
-    std::cout << maximoActual << std::endl;
+    std::cout << maximoActual;
     return finalistas;
 }
 
@@ -126,7 +130,7 @@ std::vector<std::vector<int> > confiablesConPodas(std::vector< std::vector<int> 
     int maximoActual = 0;
     confiablesConPodasAux(agentes, restantes, elegidos, finalistas, maximoActual);
 
-    std::cout << maximoActual << std::endl;
+    std::cout << maximoActual;
     return finalistas;
 }
 
@@ -195,11 +199,23 @@ int main(int argc, char** argv){
             for (int j = 0; j < setDatos[i].size(); ++j){restantes.push_back(j);}
             std::vector<int> elegidos;
 
+            std::chrono::high_resolution_clock::time_point t1;
+            std::chrono::high_resolution_clock::time_point t2;
+            std::chrono::duration<double> time_span;
+
             std::vector<std::vector<int > > finalistas;
             if(!poda){
+                t1 = now();
                 finalistas = confiablesSinPodas(setDatos[i], restantes, elegidos);
+                t2 = now();
+                time_span = std::chrono::duration_cast<std::chrono::duration<double> >(t2-t1);
+                std::cout << " " << time_span.count() << std::endl;
             } else {
+                t1 = now();
                 finalistas = confiablesConPodas(setDatos[i], restantes, elegidos);
+                t2 = now();
+                time_span = std::chrono::duration_cast<std::chrono::duration<double> >(t2-t1);
+                std::cout << " " << time_span.count() << std::endl;
             }
 
             normalizar(finalistas);
@@ -216,12 +232,24 @@ int main(int argc, char** argv){
             for (int j = 0; j < setDatos[i].size(); ++j){restantes.push_back(j);}
             std::vector<int> elegidos;
 
+            //chrono::high_resolution_clock::time_point t1;
+            //chrono::high_resolution_clock::time_point t2;
+            //chrono::duration<double> time_span;
+
 
             std::vector<std::vector<int > > finalistas;
             if(poda){
+                //t1 = now();
                 finalistas = confiablesSinPodas(setDatos[i], restantes, elegidos);
+                //t2 = now();
+                //time_span = chrono::duration_cast<chrono::duration<double>>(t2-t1);
+                //std::cout << " " << time_span.count() << std::endl;
             } else {
+                //t1 = now();
                 finalistas = confiablesConPodas(setDatos[i], restantes, elegidos);
+                //t2 = now();
+                //time_span = chrono::duration_cast<chrono::duration<double>>(t2-t1);
+                //std::cout << " " << time_span.count() << std::endl;
             }
 
             normalizar(finalistas);
