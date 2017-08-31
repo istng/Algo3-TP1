@@ -12,7 +12,7 @@ int signo(int a);
 
 void normalizar(std::vector<std::vector<int> >& v);
 
-void entradaManual(std::vector<std::vector<std::vector<int > > >& setDatos);
+void entradaManual(std::vector<std::vector<std::vector<int > > >& setDatos, std::vector<int>& votosPorSet);
 
 
 
@@ -67,11 +67,11 @@ void normalizar(std::vector<std::vector<int> >& v){
     }
 }
 
-void entradaManual(std::vector<std::vector<std::vector<int > > >& setDatos){
+void entradaManual(std::vector<std::vector<std::vector<int > > >& setDatos, std::vector<int>& votosPorSet){
 
     int cantidadAgentes, cantidadVotos;
     std::cin >> cantidadAgentes >> cantidadVotos;
-
+    votosPorSet.push_back(cantidadVotos);
     if (cantidadAgentes == 0 && cantidadVotos == 0){
         //no hacemos nada, llegamos al final
     } else {
@@ -97,7 +97,7 @@ void entradaManual(std::vector<std::vector<std::vector<int > > >& setDatos){
 
         setDatos.push_back(agentes);
 
-        entradaManual(setDatos);
+        entradaManual(setDatos, votosPorSet);
     }
 }
 

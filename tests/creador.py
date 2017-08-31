@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import random
+import math
 
 
 def encuesta(cantidadAgentes, cantidadVotos):
@@ -23,19 +24,20 @@ def encuesta(cantidadAgentes, cantidadVotos):
         print(str(voto[0]) + " " + str(voto[1]))
 
 
-def variarAgentes(cantidadAgentes, cantidadVotos):
-    for i in range(cantidadVotos, cantidadAgentes+1):
+def variarAgentes(cantidadAgentes):
+    for i in range(1, cantidadAgentes+1):
+        cantidadVotos = math.floor((i*i) / 2)
         encuesta(i, cantidadVotos)
     print("0 0")
 
 def variarVotos(cantidadAgentes, cantidadVotos):
     for i in range(1, cantidadVotos+1):
-        encuesta(cantidadAgentes, i)
+        encuesta(cantidadAgentes, cantidadVotos+1-i)
     print("0 0")
 
 def selector(tipo, cantidadAgentes, cantidadVotos):
     if(tipo == 1):
-        variarAgentes(cantidadAgentes, cantidadVotos)
+        variarAgentes(cantidadAgentes)
     elif(tipo == 0):
         variarVotos(cantidadAgentes, cantidadVotos)
 

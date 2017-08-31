@@ -117,12 +117,12 @@ void confiablesSinPodasAux(std::vector< std::vector<int> >& agentes, std::vector
             restantes.erase(restantes.begin());                         //lo quito, para no repetirlo en próximos llamados
 
             elegidos.push_back(actual);                                 //con el agente actual
-            if(puedoAgregarlo(agentes, elegidos, actual) && pasoElMaximo(restantes.size(), elegidos.size(), maximoActual)){              //me fijo si puedo agregar o no al agente al conjunto actual
+            if(puedoAgregarlo(agentes, elegidos, actual)){              //me fijo si puedo agregar o no al agente al conjunto actual
                 confiablesSinPodasAux(agentes, restantes, elegidos, finalistas, maximoActual);
             }
 
             if(elegidos.size() != 0){elegidos.pop_back();}              //sin el agente actual
-            if(!habiaQueAgregarlo(agentes, elegidos, actual) && pasoElMaximo(restantes.size(), elegidos.size(), maximoActual)){          //si no hacia falta agregar al actual, seguimos
+            if(!habiaQueAgregarlo(agentes, elegidos, actual)){          //si no hacia falta agregar al actual, seguimos
                 confiablesSinPodasAux(agentes, restantes, elegidos, finalistas, maximoActual);
             }
 
@@ -194,8 +194,9 @@ int main(int argc, char** argv){
 
     //parseo los datos pasados
     std::vector<std::vector<std::vector<int> > > setDatos;
-    entradaManual(setDatos);
-    std::cout << "tam,tiempo" << std::endl;
+    std::vector<int> votosPorSet;
+    entradaManual(setDatos, votosPorSet);
+    std::cout << "tam,tiempo,agentes,votos" << std::endl;
     for (int i = 0; i < setDatos.size(); ++i){
         //creamos restantes y elegidos
         std::vector<int> restantes;
@@ -210,13 +211,13 @@ int main(int argc, char** argv){
             finalistas = confiablesSinPodas(setDatos[i], restantes, elegidos);
             t2 = now();
             time_span = std::chrono::duration_cast<std::chrono::duration<double> >(t2-t1);
-            std::cout << "," << time_span.count() << std::endl;
+            std::cout << "," << time_span.count() << "," << setDatos[i].size() << "," << votosPorSet[i] << std::endl;
         } else {
             t1 = now();
             finalistas = confiablesConPodas(setDatos[i], restantes, elegidos);
             t2 = now();
             time_span = std::chrono::duration_cast<std::chrono::duration<double> >(t2-t1);
-            std::cout << "," << time_span.count() << std::endl;
+            std::cout << "," << time_span.count() << "," << setDatos[i].size() << "," << votosPorSet[i] << std::endl;
         }
         normalizar(finalistas);
     }
