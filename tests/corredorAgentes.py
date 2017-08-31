@@ -1,3 +1,3 @@
 #!/usr/bin/python
 import creador
-creador.selector(1, 30, 5)
+creador.selector(1, 50, 5)
