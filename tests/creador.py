@@ -23,6 +23,11 @@ def encuesta(cantidadAgentes, cantidadVotos):
     
         print(str(voto[0]) + " " + str(voto[1]))
 
+def encuestaConCeros(cantidadAgentes):
+    for i in range(1,cantidadAgentes+1):
+        print(str(i) + " 0")
+    print("0 0")
+
 
 def variarAgentes(cantidadAgentes):
     for i in range(1, cantidadAgentes+1):
@@ -35,11 +40,14 @@ def variarVotos(cantidadAgentes, cantidadVotos):
         encuesta(cantidadAgentes, cantidadVotos+1-i)
     print("0 0")
 
+
 def selector(tipo, cantidadAgentes, cantidadVotos):
     if(tipo == 1):
         variarAgentes(cantidadAgentes)
     elif(tipo == 0):
         variarVotos(cantidadAgentes, cantidadVotos)
+    elif(tipo == 2):
+        encuestaConCeros(cantidadAgentes)
 
 
 if __name__ == '__main__':
