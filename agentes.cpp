@@ -1,4 +1,4 @@
-#include "podas.cpp"
+#include "confiables.cpp"
 #include <chrono>
 
 #define now std::chrono::high_resolution_clock::now
@@ -65,7 +65,7 @@ int main(int argc, char** argv){
             time_span = std::chrono::duration_cast<std::chrono::duration<double> >(t2-t1);
             
             if(detalles == 1){std::cout << "," << time_span.count() << "," << setDatos[i].size() << "," << votosPorSet[i] << std::endl;}
-            else{std::cout << std::endl;}
+            else if(i < setDatos.size()-1){std::cout << std::endl;}
 
         } else if(poda == 2) {
             
